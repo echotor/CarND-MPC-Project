@@ -3,6 +3,26 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## The model
+
+The kinematic model includes the vehicle's x and y coordinates, orientation angle (psi), and velocity, as well as the cross-track error and psi error (epsi). Actuator outputs are acceleration and delta (steering angle). From the previous state, the model can calculate the current state base on the equations below:
+
+![equations](./model.png)
+
+## Timestep Length and Elapsed Duration (N & dt)
+
+The values chosen for N and dt in this implementation are 15 and 0.05 (see here [MPC.cpp](src/MPC.cpp), lines 9-10). These values mean that the optimizer is considering a half-second duration in which to determine a corrective trajectory. Adjusting either N or dt (even by small amounts) often produced erratic behavior. Other values tried include 10 / 0.1, 15 / 0.15 and many others.
+
+## Polynomial Fitting and MPC Preprocessing
+
+The waypoints are preprocessed by transforming them to the vehicle's perspective (see in line 150-162 of [main.cpp](src/main.cpp) ). Here I simplifies the process to fit a polynomial to the waypoints because the vehicle's x and y coordinates are now at the origin (0, 0) and the orientation angle is also zero.
+
+## Model Predictive Control with Latency
+
+If there is a latency in the vehicle physicals, it is important to measure that latency and incorporate it in the model itself. In this project, it is indicated that the simulator is having a latency of 100 milli seconds, hence that latency is also incorporated before the actuators values are arrived and sent to vehicle. The code is in [main.cpp](src/main.cpp) file at lines number 116-131.
+
+---
+
 ## Dependencies
 
 * cmake >= 3.5
@@ -19,7 +39,7 @@ Self-Driving Car Engineer Nanodegree Program
   * Run either `install-mac.sh` or `install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
@@ -42,7 +62,7 @@ Self-Driving Car Engineer Nanodegree Program
        per this [forum post](https://discussions.udacity.com/t/incorrect-checksum-for-freed-object/313433/19).
   * Linux
     * You will need a version of Ipopt 3.12.1 or higher. The version available through `apt-get` is 3.11.x. If you can get that version to work great but if not there's a script `install_ipopt.sh` that will install Ipopt. You just need to download the source from the Ipopt [releases page](https://www.coin-or.org/download/source/Ipopt/).
-    * Then call `install_ipopt.sh` with the source directory as the first argument, ex: `sudo bash install_ipopt.sh Ipopt-3.12.1`. 
+    * Then call `install_ipopt.sh` with the source directory as the first argument, ex: `sudo bash install_ipopt.sh Ipopt-3.12.1`.
   * Windows: TODO. If you can use the Linux subsystem and follow the Linux instructions.
 * [CppAD](https://www.coin-or.org/CppAD/)
   * Mac: `brew install cppad`
@@ -127,4 +147,3 @@ still be compilable with cmake and make./
 
 ## How to write a README
 A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
